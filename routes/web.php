@@ -58,7 +58,7 @@ Route::post('/sso/backchannel-logout', function (Request $request) {
     session()->regenerateToken();
 
     return response()->json(['status' => 'logged_out']);
-});
+})->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
 
 
 
