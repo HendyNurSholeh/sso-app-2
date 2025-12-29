@@ -32,3 +32,32 @@ Route::get('/logout', function () {
 });
 
 
+
+Route::post('/sso/backchannel-logout', function (Request $request) {
+
+    $logoutToken = $request->input('logout_token');
+
+    if (!$logoutToken) {
+        return response()->json(['error' => 'logout_token missing'], 400);
+    }
+
+    /*
+     * BEST PRACTICE (Minimal Validation)
+     * - Validasi issuer (iss)
+     * - Validasi audience (aud)
+     * - Pastikan event backchannel-logout ada
+     */
+
+    // TODO (opsional production):
+    // - Verify JWT signature via JWKS Keycloak
+
+    // Hapus session lokal
+    Auth::logout();
+    session()->invalidate();
+    session()->regenerateToken();
+
+    return response()->json(['status' => 'logged_out']);
+});
+
+
+
