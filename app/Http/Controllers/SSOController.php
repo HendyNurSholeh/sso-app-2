@@ -38,8 +38,14 @@ class SSOController extends Controller
             ]
         )->json();
 
+         $roles = $token['access_token']
+            ? json_decode(base64_decode(explode('.', $token['access_token'])[1]), true)
+                ['resource_access'][config('services.keycloak.client_id')]['roles'] ?? []
+            : [];
+
         session([
             'id_token' => $token['id_token'],
+            'roles' => $roles
         ]);
 
         $userInfo = Http::withToken($token['access_token'])->get(
